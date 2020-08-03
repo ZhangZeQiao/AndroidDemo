@@ -21,6 +21,10 @@
             android:name=".kotlin.KotlinActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
+        <activity
+            android:name=".kotlin.SingletonKtActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
     </application>
 
 </manifest>
