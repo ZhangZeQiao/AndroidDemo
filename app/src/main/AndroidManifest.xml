@@ -25,6 +25,10 @@
             android:name=".kotlin.SingletonKtActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
+        <activity
+            android:name=".done.anim.TurnRoundActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
     </application>
 
 </manifest>
