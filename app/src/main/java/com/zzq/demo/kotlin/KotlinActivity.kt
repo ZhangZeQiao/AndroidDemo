@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.zzq.demo.R
+import kotlinx.coroutines.*
 import java.util.*
 
 class KotlinActivity : AppCompatActivity() {
@@ -18,7 +19,71 @@ class KotlinActivity : AppCompatActivity() {
         demo.lastName = "joe"
         // demo.name = "ppp"
         toast(demo.name)
+
+        // 协程
+        coroutine04()
     }
+
+    // 协程：立即启动型【协程启动模式是默认的DEAFAULT，也就是创建并立即启动的】
+    fun coroutine01() {
+        // 协程
+        GlobalScope.launch {
+            delay(1000_0L)
+            Log.v("---zzq---", "World!")
+        }
+        Log.v("---zzq---", "Hello,")
+    }
+
+    // 协程：LAZY启动型
+    fun coroutine02() {
+        val job = GlobalScope.launch(start = CoroutineStart.LAZY) {
+            Log.v("---zzq---", "World!")
+        }
+        Log.v("---zzq---", "Hello,")
+        job.start()
+    }
+
+    // 取消一个协程
+    fun coroutine03() {
+        // 默认自动start
+        val job = GlobalScope.launch {
+            delay(1000L)
+            Log.v("---zzq---", "World!")
+        }
+        Log.v("---zzq---", "Hello,")
+        job.cancel()
+    }
+
+    // join()等待协程执行完毕
+    fun coroutine04() {
+        /*
+        挂起函数不可以在main函数中被调用，那么我们怎么调试呢？对了，就是使用runBlocking 函数！
+        我们可以使用 runBlocking 函数，构建一个主协程，从而调试我们的协程代码。
+        */
+        /*
+        最外层的runBlocking为最高级的协程 (一般为主协程), 其他协程如launch {} 因为层级较低能跑在runBlocking里。
+        runBlocking的最大特点就是它的delay()可以阻塞当前的线程，和Thread.sleep()有着相同的效果。
+        */
+        /*
+        runBlocking {}是创建一个新的协程同时阻塞当前线程，直到协程结束。这个不应该在协程中使用，主要是为main函数和测试设计的。
+         */
+        runBlocking {
+            val job = GlobalScope.launch {
+                delay(1000L)
+                Log.v("---zzq---", "World!")
+                delay(1000L)
+            }
+            Log.v("---zzq---", "Hello,")
+            // Suspends the coroutine until this job is complete【挂起协程，直到此任务完成】
+            job.join()
+            delay(1000L)
+            Log.v("---zzq---", "Good,")
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // ------------------------------------------------------------------
+
 
     // class Demo private constructor () {
     // class Demo constructor () {
