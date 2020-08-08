@@ -1,7 +1,9 @@
 package com.zzq.demo.kotlin
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.zzq.demo.R
@@ -10,19 +12,114 @@ import java.util.*
 
 class KotlinActivity : AppCompatActivity() {
 
+    private var mTv: TextView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_kotlin)
 
-        var demo = Demo()
+        /*var demo = Demo()
         // var demo = Demo(123)
         demo.lastName = "joe"
         // demo.name = "ppp"
-        toast(demo.name)
+        toast(demo.name)*/
 
         // 协程
-        coroutine04()
+        // coroutine04()
+
+        // 高阶函数
+        mTv = findViewById(R.id.tv)
+        setTvContent(mTv)
+        applyTest()
+        iterableTest()
     }
+
+    // run作用域
+    private fun setTvContent(tv: TextView?) {
+        /*mTv?.text = "111"
+        mTv?.setTextColor(Color.BLUE)
+        mTv?.textSize = 50f*/
+        /*
+        run 函数基本是 let 和 with 的结合体，对象调用 run 函数，接收一个 lambda 函数为参数，传入 this 并以闭包形式返回，返回值是最后的计算结果。
+        */
+        val content = "123321"
+        mTv?.run {
+            text = content
+            setTextColor(Color.BLUE)
+            textSize = 50f
+        }
+        /*
+        像上面这个例子，在需要多次设置属性，但设置属性后返回值不是改对象（或无返回值：Unit）不能链式调用的时候，就非常适合使用 run 函数。
+        一种伪链式调用，把对同一个对象的操作圈在一个代码块中
+        */
+    }
+
+    private fun applyTest() {
+        val applyTestIns = ApplyTest()
+        Log.v("---zzq---", "---" +
+                /*
+                由于 apply 函数返回的是调用对象自身，我们可以借助 apply 函数的特性进行多级判空。
+                或者对中间某个属性进行操作
+                */
+                applyTestIns.child?.apply {
+                    name = "hahahaha"
+                }?.name
+        )
+    }
+
+    class ApplyTest {
+
+        var child: ApplyTestChild? = null
+
+        init {
+            child = ApplyTestChild()
+        }
+
+        class ApplyTestChild {
+            var name = "haha"
+        }
+    }
+
+    private fun iterableTest() {
+        val list = listOf(1, 2, 3, 4, 5)
+        list.forEach {
+            Log.v("---zzq---", "forEach===$it")
+        }
+        list.map {
+            Log.v("---zzq---", "map===$it")
+        }
+
+        val mapIns = mapOf<String, Int>(
+                "1" to 1,
+                "2" to 2,
+                "3" to 3,
+                "4" to 4,
+                "5" to 5
+        )
+        mapIns.forEach {
+            Log.v("---zzq---", "forEach===${it.key}===${it.value}")
+        }
+        mapIns.map {
+            Log.v("---zzq---", "map===${it.key}===${it.value}")
+        }
+
+        /*
+        1.在固定长度或者长度不需要计算的时候for循环效率高于foreach，在不确定长度或者计算长度有损性能的时候用foreach比较方便
+        2.foreach适用于只是进行集合或数组遍历，for则在较复杂的循环中效率更高。
+
+        性能显然是 for>forEach>map
+
+        哪个可读性强选哪个。恕我直言，绝大部分公司产品、绝大部分程序，体现不出三者的性能差异。
+
+        map并不是让你用来做遍历的而是做映射的。
+        forEach这个才是用来遍历数组的
+        for 非数组 或者 forEach满足不了的情况下使用
+        */
+    }
+
+    // ------------------------------------------------------------------
+    // ------------------------------------------------------------------
+
 
     // 协程：立即启动型【协程启动模式是默认的DEAFAULT，也就是创建并立即启动的】
     fun coroutine01() {
