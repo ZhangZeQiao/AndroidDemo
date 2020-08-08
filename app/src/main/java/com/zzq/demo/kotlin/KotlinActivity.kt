@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.zzq.demo.R
 import kotlinx.coroutines.*
 import java.util.*
+import kotlin.properties.Delegates
 
 class KotlinActivity : AppCompatActivity() {
 
@@ -28,11 +29,63 @@ class KotlinActivity : AppCompatActivity() {
         // coroutine04()
 
         // 高阶函数
-        mTv = findViewById(R.id.tv)
+        /*mTv = findViewById(R.id.tv)
         setTvContent(mTv)
         applyTest()
-        iterableTest()
+        iterableTest()*/
+
+        // 委托
+        val lazyTest = LazyTest()
+        Log.v("---zzq---", "lazyTest-----1-----" + lazyTest.lazyFieldIns)
+        Log.v("---zzq---", "lazyTest-----2-----" + lazyTest.lazyFieldIns)
+        val a = 5
+        val b = 5
+        // val lazyTest2 = LazyTest2 {
+        //     a * b
+        // }
+        val lazyTest2 = LazyTest2(computerFun = {
+            Log.v("---zzq---", "lazyTest2---0---a=$a---b=$b---a * b = ${a * b}")
+            return@LazyTest2 a * b
+        })
+        Log.v("---zzq---", "lazyTest2---1---" + lazyTest2.lazyFieldIns)
+        Log.v("---zzq---", "lazyTest2---2---" + lazyTest2.lazyFieldIns)
+        observableTest()
     }
+
+    /*
+    lazy() 是一个函数, 接受一个 Lambda 表达式作为参数, 返回一个 Lazy <T> 实例的函数，返回的实例可以作为实现延迟属性的委托：
+    第一次调用 get() 会执行已传递给 lazy() 的 lamda 表达式并记录结果， 后续调用 get() 只是返回记录的结果。
+    */
+    class LazyTest {
+        // 可用于双保险单例模式的实现：by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {}
+        val lazyFieldIns: ApplyTest by lazy {
+            Log.v("---zzq---", "lazyTest-----0-----")
+            ApplyTest()
+        }
+    }
+
+    class LazyTest2(computerFun: () -> Int) {
+        val lazyFieldIns: Int by lazy(computerFun)
+    }
+
+    private fun observableTest() {
+        /*
+        observable 可以用于实现观察者模式。
+        Delegates.observable() 函数接受两个参数: 第一个是初始化值, 第二个是属性值变化事件的响应器(handler)。
+        在属性赋值后会执行事件的响应器(handler)，它有三个参数：被赋值的属性、旧值和新值：
+        */
+        var str: String by Delegates.observable("111") { prop, old, new ->
+            Log.v("---zzq---", "prop==$prop---old==$old---new==$new")
+        }
+        Log.v("---zzq---", "str==$str")
+        str = "222"
+        Log.v("---zzq---", "str==$str")
+    }
+
+
+    // ------------------------------------------------------------------
+    // ------------------------------------------------------------------
+
 
     // run作用域
     private fun setTvContent(tv: TextView?) {
