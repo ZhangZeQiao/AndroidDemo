@@ -35,11 +35,12 @@ class KotlinActivity : AppCompatActivity() {
         iterableTest()*/
 
         // 委托
-        val lazyTest = LazyTest()
+        /*val lazyTest = LazyTest()
         Log.v("---zzq---", "lazyTest-----1-----" + lazyTest.lazyFieldIns)
         Log.v("---zzq---", "lazyTest-----2-----" + lazyTest.lazyFieldIns)
         val a = 5
         val b = 5
+        // Kotlin 的 lambda 有个规约：如果 lambda 表达式是函数的最后一个实参，则可以放在括号外面，并且可以省略括号
         // val lazyTest2 = LazyTest2 {
         //     a * b
         // }
@@ -49,7 +50,35 @@ class KotlinActivity : AppCompatActivity() {
         })
         Log.v("---zzq---", "lazyTest2---1---" + lazyTest2.lazyFieldIns)
         Log.v("---zzq---", "lazyTest2---2---" + lazyTest2.lazyFieldIns)
-        observableTest()
+        observableTest()*/
+
+        // 测试协程多并发
+        testCoroutineConcurrency()
+    }
+
+    private fun testCoroutineConcurrency() {
+        // 都是默认自启动，但是开始启动顺序不一定【不一定是123、321等等】
+        GlobalScope.launch {
+            Log.v("---zzq---", "---1---01")
+            delay(1000L)
+            Log.v("---zzq---", "---1---02")
+            delay(3000L)
+            Log.v("---zzq---", "---1---03")
+        }
+        GlobalScope.launch {
+            Log.v("---zzq---", "---2---01")
+            delay(1000L)
+            Log.v("---zzq---", "---2---02")
+            delay(1000L)
+            Log.v("---zzq---", "---2---03")
+        }
+        GlobalScope.launch {
+            Log.v("---zzq---", "---3---01")
+            delay(1000L)
+            Log.v("---zzq---", "---3---02")
+            delay(2000L)
+            Log.v("---zzq---", "---3---03")
+        }
     }
 
     /*
