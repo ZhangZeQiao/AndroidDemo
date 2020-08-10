@@ -1,2 +1,5 @@
 rootProject.name='AndroidDemo'
 include ':app'
+include ':module_heng'
+include ':module_ha'
+include ':module_base'
