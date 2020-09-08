@@ -29,6 +29,7 @@
             android:name=".done.anim.TurnRoundActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
+        <service android:name=".service.MyService" />
     </application>
 
 </manifest>

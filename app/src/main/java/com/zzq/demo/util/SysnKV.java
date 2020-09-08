@@ -1,4 +1,4 @@
-package com.zzq.demo;
+package com.zzq.demo.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

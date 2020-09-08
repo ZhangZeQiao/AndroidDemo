@@ -1,4 +1,4 @@
-package com.zzq.demo;
+package com.zzq.demo.util;
 
 import android.os.Handler;
 import android.os.HandlerThread;

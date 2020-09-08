@@ -1,12 +1,15 @@
 package com.zzq.demo.kotlin
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.zzq.demo.R
+import com.zzq.demo.service.MyService
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.properties.Delegates
@@ -54,6 +57,12 @@ class KotlinActivity : AppCompatActivity() {
 
         // 测试协程多并发
         testCoroutineConcurrency()
+
+        val handler = Handler()
+        handler.postDelayed({
+            stopService(Intent(this, MyService::class.java))
+            //startService(Intent(KotlinActivity@ this, MyService::class.java))
+        }, 3000L)
     }
 
     private fun testCoroutineConcurrency() {
