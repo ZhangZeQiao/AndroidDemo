@@ -1,4 +1,4 @@
-package com.zzq.demo.done.anim;
+package com.zzq.demo.done2ui.anim;
 
 import android.animation.Animator;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.zzq.demo.kotlin
+package com.zzq.demo.done2system.kotlin
 
 // 二、懒汉式实现单例模式
 class SingletonDemo02 private constructor() {

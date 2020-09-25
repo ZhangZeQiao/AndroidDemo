@@ -1,4 +1,4 @@
-package com.zzq.demo.kotlin
+package com.zzq.demo.done2system.kotlin
 
 import android.content.Intent
 import android.graphics.Color
@@ -9,7 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.zzq.demo.R
-import com.zzq.demo.service.MyService
+import com.zzq.demo.done2system.service.MyService
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.properties.Delegates
