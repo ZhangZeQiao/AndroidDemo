@@ -17,8 +17,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.zzq.demo.done2system.kotlin.KotlinActivity" />
-        <activity android:name="com.zzq.demo.done2system.kotlin.SingletonKtActivity" />
+        <activity android:name=".done2system.kotlin.KotlinActivity" />
+        <activity android:name=".done2system.kotlin.SingletonKtActivity" />
         <activity android:name=".done2ui.anim.TurnRoundActivity" />
         <activity android:name=".done2function.sqlite.SQLiteActivity" />
 
