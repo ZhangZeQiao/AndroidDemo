@@ -10,31 +10,49 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
-public class NumbersDao {
+public class NumbersDao extends BaseDao<NumbersDBHelper> {
 
-    private final NumbersDBHelper mNumbersDBHelper;
+    private static volatile NumbersDao mNumbersDao;
 
-    NumbersDao(@Nullable Context context) {
-        mNumbersDBHelper = new NumbersDBHelper(context);
+    static NumbersDao getInstance(@Nullable Context context) {
+        if (mNumbersDao == null) {
+            synchronized (NumbersDao.class) {
+                if (mNumbersDao == null) {
+                    mNumbersDao = new NumbersDao(context);
+                }
+            }
+        }
+        return mNumbersDao;
+    }
+
+    private NumbersDao(@Nullable Context context) {
+        super(context);
+    }
+
+    @Override
+    protected NumbersDBHelper initDbHelper(Context context) {
+        return new NumbersDBHelper(context);
     }
 
     public boolean insert(NumberBean number) {
+        boolean isSuccess = false;
+        SQLiteDatabase writableDatabase = getWritableDatabase();
         try {
-            SQLiteDatabase writableDatabase = mNumbersDBHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(NumbersDBHelper.TABLE.NUMNAME, number.getNumName());
             values.put(NumbersDBHelper.TABLE.DESCRIPTION, number.getDescription());
             writableDatabase.insertOrThrow(NumbersDBHelper.TABLE.NAME, null, values);
-            return true;
+            isSuccess = true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        closeWritableDatabase(writableDatabase);
+        return isSuccess;
     }
 
     public boolean insert(List<NumberBean> numbers) {
         boolean isSuccess = false;
-        SQLiteDatabase writableDatabase = mNumbersDBHelper.getWritableDatabase();
+        SQLiteDatabase writableDatabase = getWritableDatabase();
         // TODO 手动设置开始事务
         writableDatabase.beginTransaction();
         try {
@@ -52,31 +70,37 @@ public class NumbersDao {
         } finally {
             // TODO 只有执行了endTransaction方法，事务操作才会真正提交到数据库
             writableDatabase.endTransaction();
+            // 关闭数据库连接
+            // writableDatabase.close();
+            closeWritableDatabase(writableDatabase);
         }
         return isSuccess;
     }
 
     public boolean deleteById(int id) {
+        boolean isSuccess = false;
+        SQLiteDatabase writableDatabase = getWritableDatabase();
         try {
-            SQLiteDatabase writableDatabase = mNumbersDBHelper.getWritableDatabase();
             writableDatabase.delete(
                     NumbersDBHelper.TABLE.NAME,// 表名
                     String.format("%s=%s", NumbersDBHelper.TABLE.ID, id),// 条件
                     null // 上面条件的占位符（ You may include ?s in the where clause）（可以，也可以不用）
             );
-            return true;
+            isSuccess = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        closeWritableDatabase(writableDatabase);
+        return isSuccess;
     }
 
     public boolean updateById(int id, NumberBean number) {
         if (number == null) {
             return false;
         }
+        boolean isSuccess = false;
+        SQLiteDatabase writableDatabase = getWritableDatabase();
         try {
-            SQLiteDatabase writableDatabase = mNumbersDBHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(NumbersDBHelper.TABLE.NUMNAME, number.getNumName());
             values.put(NumbersDBHelper.TABLE.DESCRIPTION, number.getDescription());
@@ -86,16 +110,18 @@ public class NumbersDao {
                     String.format("%s=%s", NumbersDBHelper.TABLE.ID, id),// 条件
                     null // 上面条件的占位符（ You may include ?s in the where clause）（可以，也可以不用）
             );
-            return true;
+            isSuccess = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        closeWritableDatabase(writableDatabase);
+        return isSuccess;
     }
 
     public NumberBean queryById(int id) {
+        SQLiteDatabase readableDatabase = getReadableDatabase();
+        NumberBean number = null;
         try {
-            SQLiteDatabase readableDatabase = mNumbersDBHelper.getReadableDatabase();
             // SELECT * FROM Numbers WHERE id=9
             Cursor cursor = readableDatabase.query(
                     NumbersDBHelper.TABLE.NAME,// 表名
@@ -106,22 +132,20 @@ public class NumbersDao {
                     null, // having
                     null // 排序方式
             );
-            NumberBean number = new NumberBean();
+            number = new NumberBean();
             // Move the cursor to the first row.This method will return false if the cursor is empty.
             if (cursor.moveToFirst()) {
                 number.setId(cursor.getInt(cursor.getColumnIndex(NumbersDBHelper.TABLE.ID)));
                 number.setNumName(cursor.getString(cursor.getColumnIndex(NumbersDBHelper.TABLE.NUMNAME)));
                 number.setDescription(cursor.getString(cursor.getColumnIndex(NumbersDBHelper.TABLE.DESCRIPTION)));
-            } else {
-                number = null;
             }
             // TODO 关闭cursor，回收资源
             cursor.close();
-            return number;
+            closeReadableDatabase(readableDatabase);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return number;
     }
 
 }

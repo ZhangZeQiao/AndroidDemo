@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 public class DaoManager {
 
     public static NumbersDao getNumbersDao(@Nullable Context context) {
-        return new NumbersDao(context.getApplicationContext());
+        return NumbersDao.getInstance(context.getApplicationContext());
     }
 
 }
